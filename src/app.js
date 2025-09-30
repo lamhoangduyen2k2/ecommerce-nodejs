@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
-
+import router from "./routes/index.js";
 
 // import database
 import "./dbs/init.mongodb.js";
@@ -20,11 +20,7 @@ app.use(compression());
 checkOverload();
 
 // init routes
-app.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "Welcome Review Nodejs!",
-  });
-});
+app.use("/", router);
 // handling error
 
 export default app;
