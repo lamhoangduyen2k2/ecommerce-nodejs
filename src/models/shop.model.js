@@ -1,29 +1,45 @@
 "use strict";
 import { Schema, model } from "mongoose"; // Erase if already required
 
+const DOCUMENT_NAME = "Shop";
+const COLLECTION_NAME = "Shops";
+
 // Declare the Schema of the Mongo model
-var userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-    index: true,
+var shopSchema = new Schema(
+  {
+    name: {
+      type: String,
+      trim: true,
+      maxLength: 150,
+    },
+    email: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
+    },
+    verify: {
+      type: Schema.Types.Boolean,
+      default: false,
+    },
+    roles: {
+      type: Array,
+      default: [],
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  mobile: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+    collection: COLLECTION_NAME,
+  }
+);
 
 //Export the model
-export default model("User", userSchema);
+export default model(DOCUMENT_NAME, shopSchema);
