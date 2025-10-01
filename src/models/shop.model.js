@@ -5,7 +5,7 @@ const DOCUMENT_NAME = "Shop";
 const COLLECTION_NAME = "Shops";
 
 // Declare the Schema of the Mongo model
-var shopSchema = new Schema(
+const shopSchema = new Schema(
   {
     name: {
       type: String,
@@ -40,6 +40,5 @@ var shopSchema = new Schema(
     collection: COLLECTION_NAME,
   }
 );
-
 //Export the model
 export default model(DOCUMENT_NAME, shopSchema);
