@@ -4,6 +4,8 @@ import bcrypt from "bcrypt"
 import crypto from "crypto"
 import shopModel from "../models/shop.model.js";
 import KeyTokenService from "./keyToken.service.js";
+import { createTokenPair } from "../auth/authUtils.js";
+import { getInfoData } from "../utils/index.js"
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -24,24 +26,36 @@ class AccessService {
         }
 
         const passwordHash = await bcrypt.hash(password, 10)
-        const newShop = await shopModel.create({ name, email, passwordHash, roles: [RoleShop.SHOP] })
+        const newShop = await shopModel.create({ name, email, password: passwordHash, roles: [RoleShop.SHOP] })
 
         if (newShop) {
           // created privateKey, publicKey
-          const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-            modulusLength: 4096
-          })
+          const privateKey = crypto.randomBytes(64).toString("hex")
+          const publicKey = crypto.randomBytes(64).toString("hex")
 
-          console.log(`🚀 ~ AccessService ~ { privateKey, publicKey }:`, { privateKey, publicKey }) // save collection KeyStore
+          const keyStore = await KeyTokenService.createKeyToken({ userId: newShop._id, publicKey, privateKey })
 
-          const publicKeyString = await KeyTokenService.createKeyToken({ userId: newShop._id, publicKey })
+          if (!keyStore) return {
+            code: "XXXX",
+            message: "keyStore error",
+          }
 
-          if (!publicKeyString) return {
-          code: "XXXX",
-          message: "publicKeyString error",
+          // create token pair
+          const tokens = createTokenPair({ userId: newShop._id, email }, publicKey, privateKey)
+          console.log(`Created Token success::`, tokens)
+
+          return {
+            code: 201,
+            metadata: {
+              shop: getInfoData({ fields: ["_id", "name", "email"], object: newShop }),
+              tokens
+            }
+          }
         }
 
-        // const tokens = await
+        return {
+          code: 200,
+          metadata: null
         }
     } catch (error) {
       return {
