@@ -9,7 +9,7 @@ const apiKeySchema = new Schema(
   {
     key: {
       type: String,
-      required: true,
+      required: true,  
       unique: true
     },
     status: {
