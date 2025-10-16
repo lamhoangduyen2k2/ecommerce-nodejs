@@ -1,6 +1,6 @@
 "use strict";
 
-import httpStatusCode from "./code/httpStatusCode.js";
+import httpStatusCode from "../utils/httpStatusCode.js";
 
 const { StatusCode, ReasonStatusCode } = httpStatusCode;
 

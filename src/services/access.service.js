@@ -16,6 +16,7 @@ const RoleShop = {
 };
 
 class AccessService {
+  
   static signUp = async ({ name, email, password }) => {
     // step 1: check email existed??
     const holderShop = await shopModel.findOne({ email }).lean();
