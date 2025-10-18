@@ -1,6 +1,6 @@
 "use strict";
 
-import shopModel from "../models/shop.model";
+import shopModel from "../models/shop.model.js";
 
 export const findByEmail = async ({
   email,

@@ -6,7 +6,8 @@ import shopModel from "../models/shop.model.js";
 import KeyTokenService from "./keyToken.service.js";
 import { createTokenPair } from "../auth/authUtils.js";
 import { getInfoData } from "../utils/index.js";
-import { BadRequestError } from "../core/error.response.js";
+import { AuthFailureError, BadRequestError } from "../core/error.response.js";
+import { findByEmail } from "./shop.service.js";
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -16,6 +17,37 @@ const RoleShop = {
 };
 
 class AccessService {
+  static login = async ({ email, password, refreshToken = null }) => {
+    const foundShop = await findByEmail({ email });
+    if (!foundShop) throw new BadRequestError("Shop not registered!");
+
+    const match = bcrypt.compare(password, foundShop.password);
+    if (!match) throw new AuthFailureError("Authentication error");
+
+    const privateKey = crypto.randomBytes(64).toString("hex");
+    const publicKey = crypto.randomBytes(64).toString("hex");
+
+    const tokens = createTokenPair(
+      { userId: foundShop._id, email },
+      publicKey,
+      privateKey
+    );
+
+    await KeyTokenService.createKeyToken({
+      refreshToken: tokens.refreshToken,
+      privateKey,
+      publicKey,
+      userId: foundShop._id,
+    });
+
+    return {
+      shop: getInfoData({
+        fields: ["_id", "name", "email"],
+        object: foundShop,
+      }),
+      tokens,
+    };
+  };
   static signUp = async ({ name, email, password }) => {
     // step 1: check email existed??
     const holderShop = await shopModel.findOne({ email }).lean();

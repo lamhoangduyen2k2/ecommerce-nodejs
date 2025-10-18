@@ -4,7 +4,7 @@ import httpStatusCode from "../utils/httpStatusCode.js";
 
 const { StatusCode, ReasonStatusCode } = httpStatusCode;
 
-class SuccessResponse {
+export class SuccessResponse {
   constructor({
     message,
     statusCode = StatusCode.OK,

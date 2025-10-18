@@ -28,3 +28,12 @@ export class BadRequestError extends ErrorResponse {
     super(message, statusCode);
   }
 }
+
+export class AuthFailureError extends ErrorResponse {
+  constructor(
+    message = ReasonStatusCode.UNAUTHORIZED,
+    statusCode = StatusCode.UNAUTHORIZED
+  ) {
+    super(message, statusCode);
+  }
+}

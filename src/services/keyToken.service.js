@@ -1,18 +1,38 @@
-"use strict"
+"use strict";
 
-import keyTokenModel from "../models/keytoken.model.js"
+import keyTokenModel from "../models/keytoken.model.js";
 
 class KeyTokenService {
+  static createKeyToken = async ({
+    userId,
+    publicKey,
+    privateKey,
+    refreshToken,
+  }) => {
+    try {
+      const filter = { user: userId },
+        update = {
+          publicKey,
+          privateKey,
+          refreshTokensUsed: [],
+          refreshToken,
+        },
+        options = {
+          upsert: true,
+          new: true,
+        };
 
-    static createKeyToken = async ({ userId, publicKey, privateKey }) => {
-        try {
-            const tokens = await keyTokenModel.create({ user: userId, publicKey, privateKey })
+      const tokens = await keyTokenModel.findOneAndUpdate(
+        filter,
+        update,
+        options
+      );
 
-            return tokens;
-        } catch (error) {
-            return error
-        }
+      return tokens ? tokens.publicKey : null;
+    } catch (error) {
+      return error;
     }
+  };
 }
 
-export default KeyTokenService
+export default KeyTokenService;
