@@ -10,7 +10,7 @@ const keyTokenSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "Shop"
+      ref: "Shop",
     },
     privateKey: {
       type: String,
@@ -20,9 +20,13 @@ const keyTokenSchema = new Schema(
       type: String,
       required: true,
     },
-    refreshToken: {
+    refreshTokensUsed: {
       type: Array,
       default: [],
+    },
+    refreshToken: {
+      type: String,
+      required: true,
     },
   },
   {
@@ -30,6 +34,6 @@ const keyTokenSchema = new Schema(
     collection: COLLECTION_NAME,
   }
 );
- 
+
 //Export the model
 export default model(DOCUMENT_NAME, keyTokenSchema);

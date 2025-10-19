@@ -1,6 +1,6 @@
 "use strict";
 
-import httpStatusCode from "./code/httpStatusCode.js";
+import httpStatusCode from "../utils/httpStatusCode.js";
 
 const { StatusCode, ReasonStatusCode } = httpStatusCode;
 
@@ -24,6 +24,15 @@ export class BadRequestError extends ErrorResponse {
   constructor(
     message = ReasonStatusCode.BAD_REQUEST,
     statusCode = StatusCode.BAD_REQUEST
+  ) {
+    super(message, statusCode);
+  }
+}
+
+export class AuthFailureError extends ErrorResponse {
+  constructor(
+    message = ReasonStatusCode.UNAUTHORIZED,
+    statusCode = StatusCode.UNAUTHORIZED
   ) {
     super(message, statusCode);
   }
