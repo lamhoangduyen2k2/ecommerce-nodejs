@@ -7,6 +7,10 @@ x-api-key: c5f05b5569901b9c818efa22feab15be5895b7a4ae6e03dde31fb2aade52bef25fa38
 
 {
     "name": "Shop TIPS",
+<<<<<<< HEAD
+    "email": "shoptipjs05@gmail.com",
+=======
     "email": "shoptipjs10@gmail.com",
+>>>>>>> b58800c7ea9332aadacb2127c90db59b1d155d80
     "password": "abc123"
 }
