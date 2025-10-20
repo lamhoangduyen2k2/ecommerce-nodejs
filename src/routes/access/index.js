@@ -10,6 +10,7 @@ const accessRouter = express.Router();
 // Signup
 accessRouter.post("/shop/signup", asyncHandler(accessController.signUp));
 accessRouter.post("/shop/login", asyncHandler(accessController.login));
+accessRouter.post("/shop/handlerRefreshToken", asyncHandler(accessController.handlerRefreshToken));
 
 // authentication
 accessRouter.use(authentication);

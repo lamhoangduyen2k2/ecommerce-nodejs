@@ -4,19 +4,52 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import shopModel from "../models/shop.model.js";
 import KeyTokenService from "./keyToken.service.js";
-import { createTokenPair } from "../auth/authUtils.js";
+import { createTokenPair, verifyJWT } from "../auth/authUtils.js";
 import { getInfoData } from "../utils/index.js";
-import { AuthFailureError, BadRequestError } from "../core/error.response.js";
+import { AuthFailureError, BadRequestError, Forbidden } from "../core/error.response.js";
 import { findByEmail } from "./shop.service.js";
 
 const RoleShop = {
   SHOP: "SHOP",
   WRITER: "WRITER",
   EDITOR: "EDITOR",
-  ADMIN: "ADMIN",
+  ADMIN: "ADMIN", 
 };
 
 class AccessService {
+  static handleRefreshToken = async (refreshToken) => {
+    const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
+    if (foundToken) {
+      const { userId, email } = verifyJWT(refreshToken, foundToken.privateKey)
+      console.log(`🚀 ~ AccessService ~ { userId, email }:`, { userId, email })
+      
+      await KeyTokenService.deleteKeyById(userId)
+      throw new Forbidden('Something wrong happend !! Pls relogin')
+    }
+
+    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
+    if (!holderToken) throw new AuthFailureError("Shop not registered")
+
+    const { userId, email } = verifyJWT(refreshToken, holderToken.privateKey)
+
+    const foundShop = await findByEmail({ email })
+    if (!foundShop) throw new AuthFailureError("Shop not registered")
+    
+    // Create new token pair
+    const tokens = createTokenPair({ userId, email }, holderToken.publicKey, holderToken.privateKey)
+
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken
+      }
+    })
+
+    return tokens;
+  }
+  
   static logout = async (keyStore) => {
     const delKey = await KeyTokenService.removeKeyById(keyStore._id);
     console.log("🚀 ~ AccessService ~ delKey:", delKey);
