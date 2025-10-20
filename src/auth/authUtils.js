@@ -2,7 +2,7 @@
 
 import JWT from "jsonwebtoken";
 import { asyncHandler } from "../helpers/asyncHandler.js";
-import { AuthFailureError, NotFoundError } from "../core/error.response";
+import { AuthFailureError, NotFoundError } from "../core/error.response.js";
 import keyTokenService from "../services/keyToken.service.js";
 
 const HEADER = {
@@ -60,3 +60,7 @@ export const authentication = asyncHandler(async (req, res, next) => {
     throw error;
   }
 });
+
+export const verifyJWT = (token, keySecret) => {
+  return JWT.verify(token, keySecret);
+};

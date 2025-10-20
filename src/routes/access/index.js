@@ -13,6 +13,6 @@ accessRouter.post("/shop/login", asyncHandler(accessController.login));
 
 // authentication
 accessRouter.use(authentication);
-accessRouter.post("/shop/login", asyncHandler(accessController.logout));
+accessRouter.post("/shop/logout", asyncHandler(accessController.logout));
 
 export default accessRouter;

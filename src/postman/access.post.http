@@ -7,10 +7,23 @@ x-api-key: c5f05b5569901b9c818efa22feab15be5895b7a4ae6e03dde31fb2aade52bef25fa38
 
 {
     "name": "Shop TIPS",
-<<<<<<< HEAD
-    "email": "shoptipjs05@gmail.com",
-=======
     "email": "shoptipjs10@gmail.com",
->>>>>>> b58800c7ea9332aadacb2127c90db59b1d155d80
     "password": "abc123"
 }
+
+### login
+POST {{url_dev}}shop/login
+Content-Type: application/json
+x-api-key: c5f05b5569901b9c818efa22feab15be5895b7a4ae6e03dde31fb2aade52bef25fa38bb07178c92897158e686642b14fe5d66283d3002d1bc4917a46413d8397 
+
+{
+    "email": "shoptipjs10@gmail.com",
+    "password": "abc123"
+}
+
+### logout
+POST {{url_dev}}shop/logout
+Content-Type: application/json
+x-api-key: c5f05b5569901b9c818efa22feab15be5895b7a4ae6e03dde31fb2aade52bef25fa38bb07178c92897158e686642b14fe5d66283d3002d1bc4917a46413d8397 
+x-client-id: 68f1f7b0505fe4e2622c3088
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGYxZjdiMDUwNWZlNGUyNjIyYzMwODgiLCJlbWFpbCI6InNob3B0aXBqczEwQGdtYWlsLmNvbSIsImlhdCI6MTc2MDk1NTQ4NiwiZXhwIjoxNzYxMTI4Mjg2fQ.EVB-BUmRoMXs5wfl6XhO2C2HW2XOHm20RHWM9Fk6kHQ
