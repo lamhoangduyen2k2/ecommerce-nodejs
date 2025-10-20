@@ -27,17 +27,14 @@ class AccessService {
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
 
-    const tokens = createTokenPair(
-      { userId: foundShop._id, email },
-      publicKey,
-      privateKey
-    );
+    const { _id: userId } = foundShop._id;
+    const tokens = createTokenPair({ userId, email }, publicKey, privateKey);
 
     await KeyTokenService.createKeyToken({
       refreshToken: tokens.refreshToken,
       privateKey,
       publicKey,
-      userId: foundShop._id,
+      userId,
     });
 
     return {
