@@ -5,7 +5,7 @@ import compression from "compression";
 import router from "./routes/index.js";
 
 // import database
-import "./dbs/init.mongodb.js";
+import "./databases/init.mongodb.js";
 import { checkOverload } from "./helpers/check.connect.js";
 
 const app = express();

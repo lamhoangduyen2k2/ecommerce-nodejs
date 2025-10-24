@@ -17,7 +17,7 @@ const RoleShop = {
 };
 
 class AccessService {
-  static handleRefreshToken = async (refreshToken) => {
+  static handleRefreshToken = async ({keyStore, user, refreshToken}) => {
     const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
     if (foundToken) {
       const { userId, email } = verifyJWT(refreshToken, foundToken.privateKey)
