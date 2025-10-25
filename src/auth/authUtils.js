@@ -9,7 +9,7 @@ const HEADER = {
   API_KEY: "x-api-key",
   CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
-  REFRESHTOKEN: "refreshToken",
+  REFRESHTOKEN: "x-rtoken-id",
 };
 
 const { findByUserId } = keyTokenService;
@@ -52,6 +52,7 @@ export const authentication = asyncHandler(async (req, res, next) => {
     try {
       const refreshToken = req.headers[HEADER.REFRESHTOKEN];
       const decodeUser = JWT.verify(refreshToken, keyStore.privateKey);
+      
       if (userId !== decodeUser.userId)
         throw new AuthFailureError("Invalid Userid");
       req.keyStore = keyStore;
