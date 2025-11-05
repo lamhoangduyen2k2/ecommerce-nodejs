@@ -47,7 +47,7 @@ class Clothings extends Product {
 
         return newProduct;
     }
-}
+} 
 
 // Define sub-class for different types for Electronics
 class Electronics extends Product {
