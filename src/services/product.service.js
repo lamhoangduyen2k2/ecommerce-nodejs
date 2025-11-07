@@ -1,18 +1,21 @@
 "use strict";
 
-import { product, clothing, electronic } from "../models/product.model.js";
+import { product, clothing, electronic, furniture } from "../models/product.model.js";
 import { BadRequestError } from "../core/error.response.js";
 
 class ProductFactory {
-    static createProduct(type, payload) {
-        switch(type) {
-            case 'Electronics':
-                return new Electronics(payload).createProduct();
-            case 'Clothing':
-                return new Clothings(payload).createProduct();
-            default:
-                throw new BadRequestError(`Invalid Product Type ${type}`)
-        }
+    static productRegistry = {};
+
+    static registryProductType (type, classRef) {
+        ProductFactory.productRegistry[type] = classRef
+    }
+
+    static async createProduct (type, payload) {
+        const productClass = ProductFactory.productRegistry[type];
+        
+        if (!productClass) throw new BadRequestError(`Invalid Product Type ${type}`)
+
+        return new productClass( payload ).createProduct();
     }
 }
 
@@ -68,5 +71,27 @@ class Electronics extends Product {
         return newProduct;
     }
 }
+
+// Define sub-class for different types for Furnitures
+class Furnitures extends Product {
+
+    async createProduct() {
+        const newFurniture = await furniture.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        });
+        if (!newFurniture) throw new BadRequestError('Create new electronic error');
+
+        const newProduct = super.createProduct(newFurniture._id);
+        if (!newProduct) throw new BadRequestError('Create new product error')
+
+        return newProduct;
+    }
+}
+
+// Register product type
+ProductFactory.registryProductType('Clothing', Clothings);
+ProductFactory.registryProductType('Electronics', Electronics);
+ProductFactory.registryProductType('Furnitures', Furnitures)
 
 export default ProductFactory;
