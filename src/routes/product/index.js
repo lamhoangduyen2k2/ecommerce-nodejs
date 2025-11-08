@@ -11,4 +11,7 @@ const productRouter = express.Router();
 productRouter.use(authentication);
 productRouter.post("", asyncHandler(productController.createProduct));
 
+// QUERY //
+productRouter.get("/drafts/all", asyncHandler(productController.getAllDraftsForShop))
+
 export default productRouter;

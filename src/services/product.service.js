@@ -2,6 +2,7 @@
 
 import { product, clothing, electronic, furniture } from "../models/product.model.js";
 import { BadRequestError } from "../core/error.response.js";
+import { findAllDraftsForShop } from "../models/repositories/product.repo.js";
 
 class ProductFactory {
     static productRegistry = {};
@@ -15,7 +16,12 @@ class ProductFactory {
         
         if (!productClass) throw new BadRequestError(`Invalid Product Type ${type}`)
 
-        return new productClass( payload ).createProduct();
+        return new productClass(payload).createProduct();
+    }
+
+    static async findAllDraftsForShop ({ product_shop, limit = 50, skip = 0 }) {
+        const query = { product_shop, isDraft: true }
+        return await findAllDraftsForShop({ query, limit, skip })
     }
 }
 
