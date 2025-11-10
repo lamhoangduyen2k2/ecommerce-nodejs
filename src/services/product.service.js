@@ -5,7 +5,9 @@ import { BadRequestError } from "../core/error.response.js";
 import { 
     findAllDraftsForShop, 
     findAllPublishForShop, 
-    publishProductByShop 
+    publishProductByShop, 
+    searchProductByUser, 
+    unPublishProductByShop
 } from "../models/repositories/product.repo.js";
 
 class ProductFactory {
@@ -27,8 +29,11 @@ class ProductFactory {
     static async publishProductByShop({ product_shop, product_id }) {
         return await publishProductByShop({ product_shop, product_id })
     }
+    
+    static async unPublishProductByShop({ product_shop, product_id }) {
+        return await unPublishProductByShop({ product_shop, product_id })
+    }
     // END PUT //
-
     // Query //
     static async findAllDraftsForShop ({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: true }
@@ -38,6 +43,10 @@ class ProductFactory {
     static async findAllPublishForShop ({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: false }
         return await findAllPublishForShop({ query, limit, skip })
+    }
+
+    static async searchProducts ({ keySearch }) {
+        return await searchProductByUser({ keySearch });
     }
 }
 
