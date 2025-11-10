@@ -2,7 +2,11 @@
 
 import { product, clothing, electronic, furniture } from "../models/product.model.js";
 import { BadRequestError } from "../core/error.response.js";
-import { findAllDraftsForShop } from "../models/repositories/product.repo.js";
+import { 
+    findAllDraftsForShop, 
+    findAllPublishForShop, 
+    publishProductByShop 
+} from "../models/repositories/product.repo.js";
 
 class ProductFactory {
     static productRegistry = {};
@@ -19,9 +23,21 @@ class ProductFactory {
         return new productClass(payload).createProduct();
     }
 
+    // PUT //
+    static async publishProductByShop({ product_shop, product_id }) {
+        return await publishProductByShop({ product_shop, product_id })
+    }
+    // END PUT //
+
+    // Query //
     static async findAllDraftsForShop ({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: true }
         return await findAllDraftsForShop({ query, limit, skip })
+    }
+
+    static async findAllPublishForShop ({ product_shop, limit = 50, skip = 0 }) {
+        const query = { product_shop, isDraft: false }
+        return await findAllPublishForShop({ query, limit, skip })
     }
 }
 
