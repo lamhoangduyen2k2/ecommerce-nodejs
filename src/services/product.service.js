@@ -8,7 +8,8 @@ import {
     publishProductByShop, 
     searchProductByUser, 
     unPublishProductByShop,
-    findAllProducts
+    findAllProducts,
+    findProduct
 } from "../models/repositories/product.repo.js";
 
 class ProductFactory {
@@ -63,8 +64,8 @@ class ProductFactory {
     
     }
 
-    static async findProduct ({ keySearch }) {
-        return await searchProductByUser({ keySearch });
+    static async findProduct ({ product_id }) {
+        return await findProduct({ product_id, unSelect: ['__v', 'product_variations'] });
     }
 }
 

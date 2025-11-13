@@ -10,6 +10,7 @@ const productRouter = express.Router();
 // Search api
 productRouter.get("/search/:keySearch", asyncHandler(productController.getListSearchProduct))
 productRouter.get("", asyncHandler(productController.findAllProducts))
+productRouter.get("/:product_id", asyncHandler(productController.findProduct))
 
 // authentication
 productRouter.use(authentication);
