@@ -86,6 +86,10 @@ class Product {
     async createProduct(product_id) {
         return await product.create({ ...this, _id: product_id });
     }
+
+    async updateProduct (productId, bodyUpdate) {
+        return await product.findByIdAndUpdate(productId, bodyUpdate, { new: true })
+    }
 }
 
 // Define sub-class for different types Clothing
@@ -102,6 +106,16 @@ class Clothings extends Product {
         if (!newProduct) throw new BadRequestError('Create new product error')
 
         return newProduct;
+    }
+
+    async updateProduct( productId ) {
+        const objectParams = this
+        if (objectParams.product_attributes) {
+            // update child
+        }
+
+        const updateProduct = await super.updateProduct(productId, objectParams);
+        return updateProduct;
     }
 } 
 
