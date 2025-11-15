@@ -12,7 +12,7 @@ import {
     findProduct,
     updateProductById
 } from "../models/repositories/product.repo.js";
-import { removeUndefinedObject } from "../utils/index.js";
+import { removeUndefinedObject, updateNestedObjectParser } from "../utils/index.js";
 
 class ProductFactory {
     static productRegistry = {};
@@ -114,10 +114,14 @@ class Clothings extends Product {
         const objectParams = removeUndefinedObject(this)
 
         if (objectParams.product_attributes) {
-            await updateProductById({ productId, bodyUpdate: objectParams, model: clothing })
+            await updateProductById({ 
+                productId, 
+                bodyUpdate: updateNestedObjectParser(objectParams.product_attributes), 
+                model: clothing 
+            })
         }
 
-        const updateProduct = await super.updateProduct(productId, objectParams);
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
         return updateProduct;
     }
 } 
