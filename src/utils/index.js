@@ -12,3 +12,13 @@ export const getSelectData = (select = []) => {
 export const unGetSelectData = (select = []) => {
     return Object.fromEntries(select.map(el => [el, 0]))
 }
+
+export const removeUndefinedObject = obj => {
+    Object.keys(obj).forEach(k => {
+        if (obj[k] === null) {
+            delete obj[k]
+        }
+    })
+
+    return obj
+}

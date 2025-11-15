@@ -9,8 +9,10 @@ import {
     searchProductByUser, 
     unPublishProductByShop,
     findAllProducts,
-    findProduct
+    findProduct,
+    updateProductById
 } from "../models/repositories/product.repo.js";
+import { removeUndefinedObject } from "../utils/index.js";
 
 class ProductFactory {
     static productRegistry = {};
@@ -27,12 +29,12 @@ class ProductFactory {
         return new productClass(payload).createProduct();
     }
 
-    static async updateProduct (type, payload) {
+    static async updateProduct (type, productId, payload) {
         const productClass = ProductFactory.productRegistry[type];
         
         if (!productClass) throw new BadRequestError(`Invalid Product Type ${type}`)
 
-        return new productClass(payload).createProduct();
+        return new productClass(payload).updateProduct(productId);
     }
 
     // PUT //
@@ -88,7 +90,7 @@ class Product {
     }
 
     async updateProduct (productId, bodyUpdate) {
-        return await product.findByIdAndUpdate(productId, bodyUpdate, { new: true })
+        return await updateProductById({ productId, bodyUpdate, model: product })
     }
 }
 
@@ -108,10 +110,11 @@ class Clothings extends Product {
         return newProduct;
     }
 
-    async updateProduct( productId ) {
-        const objectParams = this
+    async updateProduct(productId) {
+        const objectParams = removeUndefinedObject(this)
+
         if (objectParams.product_attributes) {
-            // update child
+            await updateProductById({ productId, bodyUpdate: objectParams, model: clothing })
         }
 
         const updateProduct = await super.updateProduct(productId, objectParams);
