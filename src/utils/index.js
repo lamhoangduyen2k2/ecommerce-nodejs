@@ -14,13 +14,18 @@ export const unGetSelectData = (select = []) => {
 }
 
 export const removeUndefinedObject = obj => {
-    Object.keys(obj).forEach(k => {
-        if (obj[k] === null) {
-            delete obj[k]
+    const newObj = {}
+    Object.keys(obj).forEach(key => {
+        if (obj[key] === null || obj[key] === undefined) {
+            return
+        }
+        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+            newObj[key] = removeUndefinedObject(obj[key])
+        } else {
+            newObj[key] = obj[key]
         }
     })
-
-    return obj
+    return newObj
 }
 /** 
  * const a = {
