@@ -13,6 +13,7 @@ import {
     updateProductById
 } from "../models/repositories/product.repo.js";
 import { removeUndefinedObject, updateNestedObjectParser } from "../utils/index.js";
+import { insertInventory } from "../models/repositories/inventory.repo.js";
 
 class ProductFactory {
     static productRegistry = {};
@@ -86,7 +87,15 @@ class Product {
     }
 
     async createProduct(product_id) {
-        return await product.create({ ...this, _id: product_id });
+        const newProduct = await product.create({ ...this, _id: product_id });
+        if (newProduct) {
+            await insertInventory({ 
+                productId: newProduct._id, 
+                shopId: this.product_shop, 
+                stock: this.product_quantity 
+            })
+        }
+        return newProduct;
     }
 
     async updateProduct (productId, bodyUpdate) {
