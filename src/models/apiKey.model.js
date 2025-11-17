@@ -1,17 +1,26 @@
 "use strict";
 import { Schema, model } from "mongoose"; // Erase if already required
 
-const DOCUMENT_NAME = "Inventory";
-const COLLECTION_NAME = "Inventories";
+const DOCUMENT_NAME = "Apikey";
+const COLLECTION_NAME = "Apikeys";
 
 // Declare the Schema of the Mongo model
-const inventorySchema = new Schema(
+const apiKeySchema = new Schema(
   {
-    inven_productId: { type: Schema.Types.ObjectId, ref: 'Product' },
-    inven_location: { type: String, default: 'unKnow'},
-    inven_stock: { type: Number, required: true },
-    inven_shopId: { type: Schema.Types.ObjectId, ref: 'Shop' },
-    inven_reservation: { type: Array, default: [] }
+    key: {
+      type: String,
+      required: true,  
+      unique: true
+    },
+    status: {
+      type: Boolean,
+      default: true,
+    },
+    permissions: {
+      type: [String],
+      required: true,
+      enum: ['0000', '1111', '2222'],
+    },
   },
   {
     timestamps: true,
@@ -20,4 +29,4 @@ const inventorySchema = new Schema(
 );
  
 //Export the model
-export default model(DOCUMENT_NAME, inventorySchema);
+export default model(DOCUMENT_NAME, apiKeySchema);
