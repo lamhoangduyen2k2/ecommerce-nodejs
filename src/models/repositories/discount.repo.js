@@ -1,10 +1,10 @@
 import { unGetSelectData, getSelectData } from "../../utils";
 
-export const findAllDiscountCodeUnSelect = async (
+export const findAllDiscountCodeUnSelect = async ({
     limit = 50, 
     page = 1, 
     sort = 'ctime', 
-    filter, unSelect, model) => {
+    filter, unSelect, model}) => {
 
     const skip = (page - 1) * limit;
     const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }
@@ -18,11 +18,11 @@ export const findAllDiscountCodeUnSelect = async (
     return documents;
 }
 
-export const findAllDiscountCodeSelect = async (
+export const findAllDiscountCodeSelect = async ({
     limit = 50, 
     page = 1, 
     sort = 'ctime', 
-    filter, select, model) => {
+    filter, select, model}) => {
 
     const skip = (page - 1) * limit;
     const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 }
@@ -34,4 +34,10 @@ export const findAllDiscountCodeSelect = async (
                                  .lean()
 
     return documents;
+}
+
+export const checkDiscountExist = async ({model, filter}) => {
+    const foundDiscount = await model.findOne(filter).lean();
+
+    return foundDiscount;
 }
