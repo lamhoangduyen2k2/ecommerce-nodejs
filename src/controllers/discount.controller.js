@@ -42,3 +42,5 @@ class DiscountController {
         }).send(res)
     }
 }
+
+export default new DiscountController();
