@@ -7,10 +7,17 @@ import productController from "../../controllers/product.controller.js";
 
 const productRouter = express.Router();
 
+// Search api
+productRouter.get("/search/:keySearch", asyncHandler(productController.getListSearchProduct))
+productRouter.get("", asyncHandler(productController.findAllProducts))
+productRouter.get("/:product_id", asyncHandler(productController.findProduct))
+
 // authentication
 productRouter.use(authentication);
 productRouter.post("", asyncHandler(productController.createProduct));
+productRouter.patch("/:productId", asyncHandler(productController.updateProduct));
 productRouter.post("/publish/:id", asyncHandler(productController.publishProductByShop));
+productRouter.post("/unpublish/:id", asyncHandler(productController.unPublishProductByShop));
 
 // QUERY //
 productRouter.get("/drafts/all", asyncHandler(productController.getAllDraftsForShop))
