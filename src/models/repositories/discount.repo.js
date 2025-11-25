@@ -1,4 +1,4 @@
-import { unGetSelectData, getSelectData } from "../../utils";
+import { unGetSelectData, getSelectData } from "../../utils/index.js";
 
 export const findAllDiscountCodeUnSelect = async ({
     limit = 50, 
