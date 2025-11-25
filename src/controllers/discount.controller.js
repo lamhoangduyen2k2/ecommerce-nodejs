@@ -16,7 +16,7 @@ class DiscountController {
 
     getAllDiscountCodes = async (req, res, next) => {
         new SuccessResponse({
-            message: 'Successful Code Generations',
+            message: 'Successful Code Found',
             metadata: await DiscountService.getAllDiscountCodesByShop({
                 ...req.query,
                 shopId: req.user.userId
@@ -26,7 +26,7 @@ class DiscountController {
 
     getDiscountAmount = async (req, res, next) => {
         new SuccessResponse({
-            message: 'Successful Code Generations',
+            message: 'Successful Code Found',
             metadata: await DiscountService.getDiscountAmount({
                 ...req.body
             })
@@ -35,7 +35,7 @@ class DiscountController {
 
     getAllDiscountCodesWithProduct = async (req, res, next) => {
         new SuccessResponse({
-            message: 'Successful Code Generations',
+            message: 'Successful Code Found',
             metadata: await DiscountService.getAllDiscountCodeWithProduct({
                 ...req.query
             })

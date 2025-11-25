@@ -1,8 +1,8 @@
 import { BadRequestError, NotFoundError } from "../core/error.response.js"
 import discount from "../models/discount.model.js"
-import { convertToObjectIdMongodb } from "../utils"
+import { convertToObjectIdMongodb } from "../utils/index.js"
 import { findAllProducts } from "../models/repositories/product.repo.js"
-import { checkDiscountExist, findAllDiscountCodeUnSelect } from "../models/repositories/discount.repo.js"
+import { checkDiscountExist, findAllDiscountCodeSelect, findAllDiscountCodeUnSelect } from "../models/repositories/discount.repo.js"
 
 
 class DiscountService {
@@ -10,13 +10,10 @@ class DiscountService {
         const {
             code, start_date, end_date, is_active,
             shopId, min_order_value, product_ids, applies_to, name, description,
-            type, value, users_used, max_uses, uses_count, max_uses_per_user
+            type, value, max_value, users_used, max_uses, uses_count, max_uses_per_user
         } = payload
 
-        if (new Date() < new Date(start_date) || new Date() > new Date(end_date)) 
-            throw new BadRequestError("Discount code has expired!")
-
-        if (new Date(start_date) > new Date(end_date))
+        if (new Date(start_date) >= new Date(end_date))
             throw new BadRequestError("Start date must be before end date!")
 
         const foundDiscount = await checkDiscountExist({ 
@@ -36,6 +33,7 @@ class DiscountService {
             discount_type: type,
             discount_code: code,
             discount_value: value,
+            discount_max_value: max_value,
             discount_min_order_value: min_order_value || 0,
             discount_start_date: new Date(start_date),
             discount_end_date: new Date(end_date),
@@ -46,7 +44,7 @@ class DiscountService {
             discount_max_uses_per_user: max_uses_per_user,
             discount_is_active: is_active,
             discount_applies_to: applies_to,
-            discount_product_ids: product_ids
+            discount_product_ids: applies_to === 'specific' ? product_ids : []
         })
 
         return newDiscount;
@@ -117,14 +115,14 @@ class DiscountService {
      * @returns {Promise<Array<object>>}
      */
     static getAllDiscountCodesByShop = async ({ limit, page, shopId }) => {
-        const discounts = await findAllDiscountCodeUnSelect({
+        const discounts = await findAllDiscountCodeSelect({
             limit: +limit,
             page: +page,
             filter: {
                 discount_shopId: convertToObjectIdMongodb(shopId),
                 discount_is_active: true
             },
-            unSelect: ['__v', 'discount_shopId'],
+            select: ['discount_shopId', 'discount_name'],
             model: discount
         })
 
@@ -154,7 +152,6 @@ class DiscountService {
         const { discount_is_active, 
                 discount_max_uses, 
                 discount_min_order_value,
-                discount_start_date,
                 discount_end_date,
                 discount_max_uses_per_user,
                 discount_users_used,
@@ -165,7 +162,7 @@ class DiscountService {
         if (!discount_is_active) throw new NotFoundError('Discount expired!');
         if (!discount_max_uses) throw new NotFoundError('Discount are out!');
 
-        if (new Date() < new Date(discount_start_date) || new Date() > new Date(discount_end_date))
+        if (new Date() > new Date(discount_end_date))
             throw new NotFoundError('Discount code has expired!');
 
         let totalOrder = 0;
@@ -184,7 +181,7 @@ class DiscountService {
                 throw new NotFoundError('User already used discount code!')
         }
 
-        const amount = discount_type === 'fixed' ? discount_type : totalOrder * (discount_value / 100)
+        const amount = discount_type === 'fixed' ? discount_value : totalOrder * (discount_value / 100)
 
         return {
             totalOrder,
