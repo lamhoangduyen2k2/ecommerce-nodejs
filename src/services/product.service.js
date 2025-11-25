@@ -38,7 +38,6 @@ class ProductFactory {
         return new productClass(payload).updateProduct(productId);
     }
 
-    // PUT //
     static async publishProductByShop({ product_shop, product_id }) {
         return await publishProductByShop({ product_shop, product_id })
     }
@@ -46,8 +45,7 @@ class ProductFactory {
     static async unPublishProductByShop({ product_shop, product_id }) {
         return await unPublishProductByShop({ product_shop, product_id })
     }
-    // END PUT //
-    // Query //
+    
     static async findAllDraftsForShop ({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: true }
         return await findAllDraftsForShop({ query, limit, skip })
@@ -63,7 +61,7 @@ class ProductFactory {
     }
 
     static async findAllProducts ({ limit = 50, sort = 'ctime', page = 1, filter = {isPublished: true} }) {
-        return await findAllProducts({ limit, sort, page, filter, select: ['product_name', 'product_price', 'product_thumb'] });
+        return await findAllProducts({ limit, sort, page, filter, select: ['product_name', 'product_price', 'product_thumb', 'product_shop'] });
     
     }
 

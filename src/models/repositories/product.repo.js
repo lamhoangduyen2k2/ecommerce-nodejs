@@ -2,7 +2,7 @@
 
 import { Types } from "mongoose";
 import { product, clothing, electronic, furniture } from "../product.model.js"
-import { getSelectData, unGetSelectData } from "../../utils/index.js";
+import { convertToObjectIdMongodb, getSelectData, unGetSelectData } from "../../utils/index.js";
 
 export const findAllDraftsForShop = async ({ query, limit, skip }) => {
     return await queryProduct({ query, limit, skip });
@@ -86,3 +86,5 @@ const queryProduct = async ({ query, limit, skip }) => {
                         .lean()
                         .exec();
 }
+
+export const getProductById = async ({ productId }) => await product.findOne({ _id: convertToObjectIdMongodb(productId) }).lean();
