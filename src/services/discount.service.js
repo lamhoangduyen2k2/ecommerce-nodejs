@@ -2,7 +2,7 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js"
 import discount from "../models/discount.model.js"
 import { convertToObjectIdMongodb } from "../utils/index.js"
 import { findAllProducts } from "../models/repositories/product.repo.js"
-import { checkDiscountExist, findAllDiscountCodeUnSelect } from "../models/repositories/discount.repo.js"
+import { checkDiscountExist, findAllDiscountCodeSelect, findAllDiscountCodeUnSelect } from "../models/repositories/discount.repo.js"
 
 
 class DiscountService {
@@ -115,14 +115,14 @@ class DiscountService {
      * @returns {Promise<Array<object>>}
      */
     static getAllDiscountCodesByShop = async ({ limit, page, shopId }) => {
-        const discounts = await findAllDiscountCodeUnSelect({
+        const discounts = await findAllDiscountCodeSelect({
             limit: +limit,
             page: +page,
             filter: {
                 discount_shopId: convertToObjectIdMongodb(shopId),
                 discount_is_active: true
             },
-            unSelect: ['__v', 'discount_shopId'],
+            select: ['discount_shopId', 'discount_name'],
             model: discount
         })
 
@@ -152,7 +152,6 @@ class DiscountService {
         const { discount_is_active, 
                 discount_max_uses, 
                 discount_min_order_value,
-                discount_start_date,
                 discount_end_date,
                 discount_max_uses_per_user,
                 discount_users_used,
@@ -163,7 +162,7 @@ class DiscountService {
         if (!discount_is_active) throw new NotFoundError('Discount expired!');
         if (!discount_max_uses) throw new NotFoundError('Discount are out!');
 
-        if (new Date() < new Date(discount_start_date) || new Date() > new Date(discount_end_date))
+        if (new Date() > new Date(discount_end_date))
             throw new NotFoundError('Discount code has expired!');
 
         let totalOrder = 0;
@@ -182,7 +181,7 @@ class DiscountService {
                 throw new NotFoundError('User already used discount code!')
         }
 
-        const amount = discount_type === 'fixed' ? discount_type : totalOrder * (discount_value / 100)
+        const amount = discount_type === 'fixed' ? discount_value : totalOrder * (discount_value / 100)
 
         return {
             totalOrder,
