@@ -1,3 +1,4 @@
+import { convertToObjectIdMongodb } from "../../utils/index.js"
 import cart from "../cart.model.js"
 
 export const findUserCart = async ({ query }) => await cart.findOne(query)
@@ -34,3 +35,5 @@ export const updateUserCartQuantity  = async ({ userId, product }) => {
 }
 
 export const updateCart = async ({ query, update }) => await cart.updateOne(query, update)
+
+export const findCartById = async ({ cartId }) => await cart.findOne({ _id: convertToObjectIdMongodb(cartId), cart_state: 'active' }).lean()
