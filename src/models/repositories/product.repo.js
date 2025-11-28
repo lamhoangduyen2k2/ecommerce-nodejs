@@ -94,6 +94,7 @@ export const checkProductByServer = async (products) => {
         const foundProduct = await getProductById({ productId: product.productId })
         if (foundProduct) {
             return {
+                productId: product.productId,
                 price: foundProduct.product_price,
                 quantity: product.quantity,
                 productId: product.productId

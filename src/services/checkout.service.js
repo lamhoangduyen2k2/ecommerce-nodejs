@@ -8,40 +8,40 @@ import DiscountService from "../services/discount.service.js"
 
 class CheckoutService {
     /**
-     * {
-     *      "cartId",
-     *      "userId",
-     *      "shop_order_ids": [
-     *          {
-        *          "shopId",
-        *          "shop_discounts": []
-        *          "item_products": [
-        *              {
-        *                  "price",
-        *                  "quantity",
-        *                  "productId"
-        *              }
-        *          ]
-     *          },
-     *          {
-        *          "shopId",
-        *          "shop_discounts": [
-        *               {
-        *                   "shopId",
-        *                   "discountId",
-        *                   "codeId",
-        *               }
-        *           ]
-        *          "item_products": [
-        *              {
-        *                  "price",
-        *                  "quantity",
-        *                  "productId"
-        *              }
-        *          ]
-     *          }
-     *      ]
-     * }
+      {
+           "cartId",
+           "userId",
+           "shop_order_ids": [
+               {
+                  "shopId",
+                  "shop_discounts": []
+                  "item_products": [
+                      {
+                          "price",
+                          "quantity",
+                          "productId"
+                      }
+                  ]
+               },
+               {
+                  "shopId",
+                  "shop_discounts": [
+                       {
+                           "shopId",
+                           "discountId",
+                           "codeId",
+                       }
+                   ]
+                  "item_products": [
+                      {
+                          "price",
+                          "quantity",
+                          "productId"
+                      }
+                  ]
+               }
+           ]
+      }
      */
     static checkoutReview = async ({ cartId, userId, shop_order_ids = [] }) => {
         const foundCart = await findCartById({ cartId })
@@ -59,14 +59,13 @@ class CheckoutService {
             const { shopId, shop_discounts = [], item_products = [] } = shop_order_ids[i]
 
             const checkProductServer = await checkProductByServer(item_products)
-            console.log("🚀 ~ CheckoutService ~ checkProductServer:", checkProductServer)
             if (!checkProductServer[0]) throw new BadRequestError('Order wrong!!!')
 
             const checkoutPrice = checkProductServer.reduce((acc, product) => {
                 return acc + (product.quantity * product.price)
             }, 0)
 
-            checkout_order.totalCheckout += checkoutPrice
+            // checkout_order.totalCheckout += checkoutPrice
 
             const itemCheckout = {
                 shopId,
@@ -90,6 +89,7 @@ class CheckoutService {
                     itemCheckout.priceApplyDiscount = checkoutPrice - discount
                 }
             }
+            checkout_order.totalPrice += itemCheckout.priceRaw
             checkout_order.totalCheckout += itemCheckout.priceApplyDiscount
             shop_order_ids_new.push(itemCheckout)
         }
