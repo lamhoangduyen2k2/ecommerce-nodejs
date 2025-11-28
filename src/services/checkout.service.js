@@ -100,6 +100,24 @@ class CheckoutService {
             checkout_order
         }
     }
+
+    static orderByUser = async ({
+        shop_order_ids,
+        cartId,
+        userId,
+        user_address,
+        user_payment
+    }) => {
+        const { shop_order_ids_new, checkout_order } = await this.checkoutReview({
+            cartId,
+            userId,
+            shop_order_ids
+        })
+
+        // Sử dụng flatMap để làm phẳng object tạo thành một array
+        const products = shop_order_ids_new.flatMap(order => order.item_products)
+        
+    }
 }
 
 export default CheckoutService
