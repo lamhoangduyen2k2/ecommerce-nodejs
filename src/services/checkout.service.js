@@ -116,7 +116,10 @@ class CheckoutService {
 
         // Sử dụng flatMap để làm phẳng object tạo thành một array
         const products = shop_order_ids_new.flatMap(order => order.item_products)
-        
+        for (let i = 0; i < products.length; i++) {
+            const { productId, quantity } = products[i];
+            
+        }
     }
 }
 
