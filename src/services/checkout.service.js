@@ -4,6 +4,7 @@ import { BadRequestError, NotFoundError } from "../core/error.response.js"
 import { findCartById } from "../models/repositories/cart.repo.js"
 import { checkProductByServer } from "../models/repositories/product.repo.js"
 import DiscountService from "../services/discount.service.js"
+import { acquireLock, releaseLock } from "./redis.service.js"
 
 
 class CheckoutService {
@@ -116,10 +117,21 @@ class CheckoutService {
 
         // Sử dụng flatMap để làm phẳng object tạo thành một array
         const products = shop_order_ids_new.flatMap(order => order.item_products)
+        const acquireProduct = []
         for (let i = 0; i < products.length; i++) {
             const { productId, quantity } = products[i];
-            
+            const keyLock = await acquireLock(productId, quantity, cartId);
+            acquireProduct.push(keyLock ? true : false)
+            if (keyLock) {
+                await releaseLock(keyLock)
+            }
         }
+
+        if (acquireProduct.includes(false)) throw new BadRequestError('Một số sản phẩm đã được cập nhật, vui lòng quay lại giỏ hàng...')
+
+        const newOrder = await order.create();
+
+        return newOrder;
     }
 }
 
