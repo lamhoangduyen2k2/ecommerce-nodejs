@@ -1,6 +1,7 @@
 'use strict'
 
 import { BadRequestError, NotFoundError } from "../core/error.response.js"
+import order from "../models/order.model.js"
 import { findCartById } from "../models/repositories/cart.repo.js"
 import { checkProductByServer } from "../models/repositories/product.repo.js"
 import DiscountService from "../services/discount.service.js"
@@ -129,10 +130,48 @@ class CheckoutService {
 
         if (acquireProduct.includes(false)) throw new BadRequestError('Một số sản phẩm đã được cập nhật, vui lòng quay lại giỏ hàng...')
 
-        const newOrder = await order.create();
+        const newOrder = await order.create({
+            order_userId: userId,
+            order_checkout: checkout_order,
+            order_shipping: user_address,
+            order_payment: user_payment,
+            order_products: shop_order_ids_new,
+        });
+
+        if (newOrder) {
+            // remove product in my cart
+        }
 
         return newOrder;
     }
+
+    /**
+     * Query Orders [Users]
+     */
+    static getOrdersByUser = async () => {
+        
+    }
+
+    /**
+     * Query Order Using Id [Users]
+     */
+    static getOneOrderByUser = async () => {
+
+    }
+
+    /**
+     * Cancel Order [Users]
+     */
+    static cancelOrderByUser = async () => {
+
+    }
+
+    /**
+     * Update Order Status [Shop | Admin]
+     */
+    static updateOrderStatusByShop = async () => {
+
+    }
 }
 
-export default CheckoutService
+export default CheckoutService;
