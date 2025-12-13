@@ -14,7 +14,8 @@ export const reservationInventory = async ({ productId, quantity, cartId }) => {
     const query = {
         inven_productId: convertToObjectIdMongodb(productId),
         inven_stock: { $gte: quantity }
-    }, updateSet = {
+    }, 
+    updateSet = {
         $inc: {
             inven_stock: -quantity
         },
@@ -25,7 +26,8 @@ export const reservationInventory = async ({ productId, quantity, cartId }) => {
                 createOn: new Date()
             }
         }
-    }, options = { upsert: true, new: true }
+    }, 
+    options = { upsert: true, new: true }
 
     return await inventory.updateOne(query, updateSet, options)
 }
