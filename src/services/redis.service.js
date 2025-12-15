@@ -1,6 +1,6 @@
 import { createClient } from "redis"
 import { promisify } from "util"
-import { reservationInventory } from "../models/repositories/inventory.repo"
+import { reservationInventory } from "../models/repositories/inventory.repo.js"
 
 const redisClient = createClient()
 
