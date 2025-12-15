@@ -28,7 +28,7 @@ export const acquireLock = async (productId, quantity, cartId) => {
     }
 }
 
-export const releaseLock = async keyLock => {
+export const releaseLock = async (keyLock) => {
     const delAsync = promisify(redisClient.del).bind(redisClient)
     return await delAsync(keyLock)
 }
