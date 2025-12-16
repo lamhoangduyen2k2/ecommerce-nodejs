@@ -1,5 +1,5 @@
 import inventory from "../inventory.model.js"
-import { convertToObjectIdMongodb } from "../../utils"
+import { convertToObjectIdMongodb } from "../../utils/index.js"
 
 export const insertInventory = async ({ productId, shopId, stock, location = "unKnow" }) => {
     return await inventory.create({
