@@ -21,7 +21,7 @@ class Database {
     mongoose
       .connect(connectString, { maxPoolSize: 50 })
       .then((_) => console.info("Connected Mongodb Success", countConnect()))
-      .catch((err) => console.error("Error Connect!"));
+      .catch((err) => console.error("Error Connect!", err));
   };
 
   static getInstance = () => {
