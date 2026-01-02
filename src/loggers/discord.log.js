@@ -1,9 +1,7 @@
 'use strict'
 
 import { Client, GatewayIntentBits } from 'discord.js'
-
 const { CHANNELID_DISCORD, TOKEN_DISCORD } = process.env
-
 class LoggerService {
     constructor(){
         this.client = new Client({
@@ -16,13 +14,14 @@ class LoggerService {
         })
 
         // add channelId
-        this.channelId = CHANNELID_DISCORD || '1455832640060920052'
+        this.channelId = CHANNELID_DISCORD
 
         this.client.on('ready', () => {
             console.log(`Logged is as ${this.client.user.tag}!`);
         })
 
-        this.client.login(TOKEN_DISCORD || 'MTQ1NTgzMDc2MzcyNjQzODQyMw.Gdzlwo.plBgwX_BYSk1SbbthfKhClcZOmfG-_EgzELcTE')
+        this.client.login(TOKEN_DISCORD)
+        
     }
 
     sendToFormatCode = (logData) => {
