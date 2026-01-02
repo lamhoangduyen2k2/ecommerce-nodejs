@@ -156,7 +156,9 @@ class DiscountService {
                 discount_max_uses_per_user,
                 discount_users_used,
                 discount_type,
-                discount_value
+                discount_value,
+                discount_applies_to,
+                discount_product_ids
             } = foundDiscount;
 
         if (!discount_is_active) throw new NotFoundError('Discount expired!');
@@ -165,13 +167,20 @@ class DiscountService {
         if (new Date() > new Date(discount_end_date))
             throw new NotFoundError('Discount code has expired!');
 
-        let totalOrder = 0;
+        let totalOrder = products.reduce((acc, product) => {
+            return acc + (product.quantity * product.price)
+        }, 0)
+
         if (discount_min_order_value > 0) {
-            // Get total
-            totalOrder = products.reduce((acc, product) => {
-                return acc + (product.quantity * product.price)
-            }, 0)
-            if (totalOrder < discount_min_order_value) 
+            let totalOrderForDiscount = 0
+            if (discount_applies_to === 'specific') {
+                totalOrderForDiscount = products.reduce((acc, product) => {
+                    return discount_product_ids.includes(product.productId) ? acc + (product.quantity * product.price) : acc
+                }, 0)
+            } else {
+                totalOrderForDiscount = totalOrder
+            }
+            if (totalOrderForDiscount < discount_min_order_value) 
                 throw new NotFoundError(`Discount requires a minimum order value of ${discount_min_order_value}!`)
         }
 
@@ -181,7 +190,16 @@ class DiscountService {
                 throw new NotFoundError('User already used discount code!')
         }
 
-        const amount = discount_type === 'fixed' ? discount_value : totalOrder * (discount_value / 100)
+        let amount = 0;
+        if (discount_type === 'fixed') {
+            amount = discount_value
+        } else {
+            let totalOrderForDiscount = totalOrder;
+            if (discount_applies_to === 'specific') {
+                totalOrderForDiscount = products.filter(p => discount_product_ids.includes(p.productId)).reduce((acc, product) => acc + (product.quantity * product.price), 0)
+            }
+            amount = totalOrderForDiscount * (discount_value / 100)
+        }
 
         return {
             totalOrder,
