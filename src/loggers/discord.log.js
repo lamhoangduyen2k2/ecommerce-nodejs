@@ -16,7 +16,7 @@ class LoggerService {
         // add channelId
         this.channelId = CHANNELID_DISCORD
 
-        this.client.on('ready', () => {
+        this.client.on('clientReady', () => {
             console.log(`Logged is as ${this.client.user.tag}!`);
         })
 
