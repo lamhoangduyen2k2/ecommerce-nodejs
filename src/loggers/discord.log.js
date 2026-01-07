@@ -1,7 +1,9 @@
 'use strict'
 
 import { Client, GatewayIntentBits } from 'discord.js'
+
 const { CHANNELID_DISCORD, TOKEN_DISCORD } = process.env
+
 class LoggerService {
     constructor(){
         this.client = new Client({
@@ -21,7 +23,6 @@ class LoggerService {
         })
 
         this.client.login(TOKEN_DISCORD)
-        
     }
 
     sendToFormatCode = (logData) => {
